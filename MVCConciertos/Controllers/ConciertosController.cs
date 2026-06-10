@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MVCConciertos.Services;
+using MVCConciertos.Models;
 
 namespace MVCConciertos.Controllers
 {
@@ -12,23 +13,27 @@ namespace MVCConciertos.Controllers
             _service = service;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? idCategoria)
         {
-            var eventos = await _service.GetEventosAsync();
-            return View(eventos);
-        }
-
-        public async Task<IActionResult> Categorias()
-        {
+            // Cargamos la lista de categorías para el <select>
             var categorias = await _service.GetCategoriasAsync();
-            return View(categorias);
-        }
+            ViewData["Categorias"] = categorias;
 
-        public async Task<IActionResult> EventosCategoria(int idCategoria)
-        {
-            var eventos = await _service.GetEventosByCategoriaAsync(idCategoria);
-            ViewData["ID_CATEGORIA"] = idCategoria;
-            return View("Index", eventos); // Podemos reusar la vista Index si usa el mismo modelo
+            List<Evento>? eventos;
+
+            // Filtramos dependiendo de si el usuario ha seleccionado algo
+            if (idCategoria.HasValue && idCategoria.Value > 0)
+            {
+                eventos = await _service.GetEventosByCategoriaAsync(idCategoria.Value);
+                ViewData["CategoriaSeleccionada"] = idCategoria.Value;
+            }
+            else
+            {
+                eventos = await _service.GetEventosAsync();
+                ViewData["CategoriaSeleccionada"] = 0;
+            }
+
+            return View(eventos);
         }
     }
 }

@@ -2,11 +2,12 @@
 
 @{
     ViewData["Title"] = "Explorar Eventos";
+    var categorias = ViewData["Categorias"] as List<MVCConciertos.Models.CategoriaEvento> ?? new List<MVCConciertos.Models.CategoriaEvento>();
+    int categoriaSeleccionada = (int)(ViewData["CategoriaSeleccionada"] ?? 0);
 }
 
 <style>
     body {
-         /* Puedes sacar esto al site.css si quieres que todo el sitio sea oscuro */
         background-color: #0f1014;
         color: #e2e4e9;
     }
@@ -31,6 +32,42 @@
         font-size: 1.1rem;
         max-width: 600px;
         margin: 1rem auto 0;
+    }
+
+    /* Estilos para el filtro oscuro minimalista */
+    .filter-wrapper {
+        max-width: 400px;
+        margin: 2rem auto 0;
+    }
+
+    .filter-select {
+        background-color: #16181d;
+        color: #e2e4e9;
+        border: 1px solid #3b3f4c;
+        border-radius: 0.5rem 0 0 0.5rem;
+        padding: 0.75rem 1rem;
+    }
+
+    .filter-select:focus {
+        background-color: #16181d;
+        color: #ffffff;
+        border-color: #ffffff;
+        box-shadow: none;
+    }
+
+    .filter-btn {
+        background-color: #ffffff;
+        color: #000000;
+        border: 1px solid #ffffff;
+        border-radius: 0 0.5rem 0.5rem 0;
+        font-weight: 600;
+        padding: 0 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover {
+        background-color: #0f1014;
+        color: #ffffff;
     }
 
     .event-card {
@@ -118,6 +155,29 @@
     <div class="header-section">
         <h1>Cartelera de Conciertos</h1>
         <p>Descubre a tus artistas favoritos en un formato simple, oscuro y sin distracciones.</p>
+
+        <!-- Filtro Integrado -->
+        <div class="filter-wrapper">
+            <form method="get" asp-action="Index">
+                <div class="input-group">
+                    <select name="idCategoria" class="form-select filter-select" onchange="this.form.submit()">
+                        <option value="">-- Todas las categorías --</option>
+                        @foreach (var cat in categorias)
+                        {
+                            if (cat.IdCategoria == categoriaSeleccionada)
+                            {
+                                <option value="@cat.IdCategoria" selected="selected">@cat.Nombre</option>
+                            }
+                            else
+                            {
+                                <option value="@cat.IdCategoria">@cat.Nombre</option>
+                            }
+                        }
+                    </select>
+                    <button type="submit" class="btn filter-btn">Filtrar</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Grid de Eventos -->
@@ -131,7 +191,6 @@
                         <div class="event-image-wrapper">
                             @if (!string.IsNullOrEmpty(evento.Imagen))
                             {
-                                // Agregamos la URL Base del Bucket a la imagen que viene de API
                                 string bucketUrl = "https://bucket-examen-lastdance.s3.us-east-1.amazonaws.com/";
                                 string urlFinal = $"{bucketUrl}{evento.Imagen}";
 
@@ -139,7 +198,6 @@
                             }
                             else
                             {
-                                <!-- Fallback si no hay imagen en BD -->
                                 <div class="w-100 h-100 d-flex justify-content-center align-items-center">
                                     <h1 class="display-1 opacity-25">🎵</h1>
                                 </div>
@@ -163,7 +221,7 @@
     {
         <div class="empty-state">
             <h3 class="mb-2">Sin eventos programados</h3>
-            <p>Vuelve más tarde para descubrir nuevas adiciones a nuestra cartelera.</p>
+            <p>No hemos encontrado conciertos para esta categoría. Vuelve más tarde o cambia el filtro.</p>
         </div>
     }
 </div>
