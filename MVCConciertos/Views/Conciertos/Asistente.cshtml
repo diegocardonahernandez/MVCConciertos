@@ -1,0 +1,147 @@
+﻿@{
+    ViewData["Title"] = "Asistente Inteligente";
+}
+
+<style>
+    body {
+        background-color: #0f1014;
+        color: #e2e4e9;
+    }
+
+    .header-section {
+        padding: 4rem 1rem 2rem;
+        text-align: center;
+        border-bottom: 1px solid #1f2228;
+        margin-bottom: 2rem;
+    }
+
+    .header-section h1 {
+        font-weight: 800;
+        font-size: 3rem;
+        letter-spacing: -1px;
+        color: #ffffff;
+    }
+
+    .header-section p {
+        color: #8c92a4;
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 1rem auto 0;
+    }
+
+    .chat-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .chat-box {
+        background: #16181d;
+        border: 1px solid #23262f;
+        border-radius: 1rem;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    /* Solucionado: Forzar el color y compatibilidad de Bootstrap */
+    .form-control-dark {
+        background-color: #0f1014 !important;
+        color: #ffffff !important;
+        border: 1px solid #3b3f4c !important;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        font-size: 1.1rem;
+        resize: none;
+    }
+
+    .form-control-dark:focus {
+        background-color: #1a1c22 !important;
+        color: #ffffff !important;
+        border-color: #ffffff !important;
+        box-shadow: 0 0 0 0.25rem rgba(255,255,255,0.1) !important;
+    }
+
+    .form-control-dark::placeholder {
+        color: #6c757d !important;
+        opacity: 1 !important;
+    }
+
+    .custom-label {
+        color: #8c92a4 !important;
+        font-weight: 600;
+    }
+
+    .btn-minimal {
+        background: #ffffff;
+        color: #000000;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        padding: 0.8rem 2rem;
+        width: 100%;
+        transition: background 0.3s ease, color 0.3s ease;
+        border: 1px solid #ffffff;
+        margin-top: 1rem;
+    }
+
+    .btn-minimal:hover {
+        background: transparent;
+        color: #ffffff;
+    }
+
+    .msg-user {
+        border-left: 4px solid #ffffff;
+        padding-left: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .msg-user h5 { margin-bottom: 0.3rem; color: #8c92a4; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;}
+    .msg-user p { color: #ffffff; font-size: 1.1rem; }
+
+    .msg-ai {
+        background: #1f2228;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        border-left: 4px solid #3b3f4c;
+    }
+
+    .msg-ai h5 { margin-bottom: 0.5rem; color: #8c92a4; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+    .msg-ai p { color: #e2e4e9; line-height: 1.6; margin-bottom: 0; white-space: pre-wrap; font-size: 1.05rem; }
+</style>
+
+<div class="container pb-5">
+
+    <div class="header-section">
+        <h1>Asistente Inteligente</h1>
+        <p>Pregúntale a nuestra inteligencia artificial todo lo que necesites saber sobre artistas y eventos musicales.</p>
+    </div>
+
+    <div class="chat-container">
+        
+        <!-- Formulario -->
+        <div class="chat-box">
+            <form asp-action="Asistente" method="post">
+                <div class="mb-3">
+                    <label class="form-label custom-label mb-2">Haz tu pregunta:</label>
+                    <textarea name="pregunta" class="form-control form-control-dark" rows="3" placeholder="Ej: ¿Quién es Messi? o ¿Cuándo es el próximo concierto de AC/DC?" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-minimal">Enviar consulta</button>
+            </form>
+        </div>
+
+        <!-- Resultados -->
+        @if (ViewData["Pregunta"] != null)
+        {
+            <div class="chat-box" style="margin-top: 2rem;">
+                <div class="msg-user">
+                    <h5>Tu Pregunta</h5>
+                    <p>@ViewData["Pregunta"]</p>
+                </div>
+
+                <div class="msg-ai">
+                    <h5>Respuesta de IA</h5>
+                    <p>@ViewData["Respuesta"]</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -35,5 +35,24 @@ namespace MVCConciertos.Controllers
 
             return View(eventos);
         }
+
+        // GET: Muestra la pantalla del Asistente IA
+        public IActionResult Asistente()
+        {
+            return View();
+        }
+
+        // POST: Recibe la pregunta, llama a la API y devuelve la vista con la respuesta
+        [HttpPost]
+        public async Task<IActionResult> Asistente(string pregunta)
+        {
+            if (!string.IsNullOrEmpty(pregunta))
+            {
+                string? respuestaIA = await _service.PreguntarIAAsync(pregunta);
+                ViewData["Pregunta"] = pregunta;
+                ViewData["Respuesta"] = respuestaIA;
+            }
+            return View();
+        }
     }
 }
